@@ -7,7 +7,7 @@ Author: Fabio Barbazza
 from sklearn import preprocessing
 from sklearn.model_selection import train_test_split
 
-import generic_task
+from tasks import generic_task
 import logging 
 
 logging.basicConfig(level=logging.WARN)

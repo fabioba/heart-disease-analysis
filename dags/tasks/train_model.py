@@ -6,7 +6,7 @@ Author: Fabio Barbazza
 """
 from sklearn.linear_model import LogisticRegression
 
-import generic_task
+from tasks import generic_task
 import logging 
 
 logging.basicConfig(level=logging.WARN)
@@ -14,7 +14,6 @@ logger = logging.getLogger(__name__)
 
 class TrainModel(generic_task.GenericTask):
     """
-    
     """
 
     def __init__(self,**context):

@@ -4,7 +4,7 @@ This module includes the logic of cleaning data
 Date: Oct, 2022
 Author: Fabio Barbazza
 """
-import generic_task
+from tasks import generic_task
 import logging 
 
 logging.basicConfig(level=logging.WARN)
@@ -12,7 +12,6 @@ logger = logging.getLogger(__name__)
 
 class CleanData(generic_task.GenericTask):
     """
-    
     """
 
     def __init__(self,**context):
