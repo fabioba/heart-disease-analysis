@@ -4,9 +4,10 @@ This operator is responsible for loading data from local storage to Postgres tab
 Date: Nov, 2022
 Author: Fabio Barbazza
 """
-from airflow.providers.postgres.operators.postgres import PostgresOperator
 from airflow.models import BaseOperator
 from airflow.hooks.postgres_hook import PostgresHook
+from airflow.utils.decorators import apply_defaults
+
 
 
 class LoadDataOperator(BaseOperator):

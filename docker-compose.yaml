@@ -55,8 +55,8 @@ x-airflow-common:
     AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0
     AIRFLOW__CORE__FERNET_KEY: ''
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
-    AIRFLOW__CORE__LOAD_EXAMPLES: 'true'
-    _PIP_ADDITIONAL_REQUIREMENTS: 'mlflow==1.29.0'
+    AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+    _PIP_ADDITIONAL_REQUIREMENTS: 'mlflow==1.29.0 sklearn==1.1.2'
   volumes:
     - ./dags:/opt/airflow/dags
     - ./logs:/opt/airflow/logs
