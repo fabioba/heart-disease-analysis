@@ -49,21 +49,22 @@ After updating the URI of the MLFlow server, create a new connection on `Airflow
 ## Data Sources
 The raw data comes from Kaggle and below there's the schema:
 ```yaml
-CREATE TABLE IF NOT EXISTS public.raw_heart_disease(
-    age int,
-    sex varchar,
-    cp int,
-    trestbps int,
-    chol int,
-    fbs int,
-    restecg int,
-    thalach int,
-    exang int,
-    oldpeak float,
-    slope int,
-    ca int,
-    thal int,
-    target int
+CREATE TABLE IF NOT EXISTS public.heart_disease_stage(
+	"account_id" varchar,
+    "age" int,
+    "sex" varchar,
+    "cp" int,
+    "trestbps" int,
+    "chol" int,
+    "fbs" int,
+    "restecg" int,
+    "thalach" int,
+    "exang" int,
+    "oldpeak" float,
+    "slope" int,
+    "ca" int,
+    "thal" int,
+    "target" int
 )
 
 ```
