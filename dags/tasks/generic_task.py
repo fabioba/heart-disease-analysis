@@ -22,15 +22,18 @@ class GenericTask():
         logger.info('self.table')
 
 
-    def _read_data(self):
+    def _get_data(self, table_name):
         """
         This method is responsible for reading data
+
+        Returns:
+            read_df(pandas df)
         """
         try:
 
             logger.info('__read_data starting')
 
-            sql_stmt = "SELECT * FROM {}".format(self.table)
+            sql_stmt = "SELECT * FROM {}".format(table_name)
             pg_hook = PostgresHook(
                 postgres_conn_id='postgres_default',
                 schema='public'
@@ -39,11 +42,13 @@ class GenericTask():
             cursor = pg_conn.cursor()
             cursor.execute(sql_stmt)
 
-            self.heart_fact = cursor.fetchall()
+            read_df = cursor.fetchall()
 
-            logger.info('heart_fact shape: {}'.format(self.heart_fact.shape))
+            logger.info('read_df shape: {}'.format(read_df.shape))
 
             logger.info('__read_data success')
+
+            return read_df
 
 
         except Exception as err:
@@ -51,9 +56,13 @@ class GenericTask():
             raise err
 
 
-    def _store_data(self):
+    def _store_data(self, df_to_store, table_name):
         """
         This method is responsible for storing data
+
+        Args:
+            df_to_store(pd dataframe)
+            table_name(str)
         """
         try:
 
@@ -61,7 +70,7 @@ class GenericTask():
             logger.info('__store_data starting')
 
             postgres_sql_upload = PostgresHook(postgres_conn_id='postgres_default', schema='public') 
-            postgres_sql_upload.insert_rows('heart_fact_cleaned', self.heart_fact)
+            postgres_sql_upload.insert_rows(table_name, df_to_store)
 
 
             logger.info('__store_data success')

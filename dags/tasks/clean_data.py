@@ -4,7 +4,6 @@ This module includes the logic of cleaning data
 Date: Oct, 2022
 Author: Fabio Barbazza
 """
-from airflow.hooks.postgres_hook import PostgresHook
 import generic_task
 import logging 
 
@@ -30,11 +29,11 @@ class CleanData(generic_task.GenericTask):
         """
         try:
 
-            self._read_data()
+            self.heart_fact = self._get_data('heart_fact')
 
             self.__clean_data()
 
-            self._store_data()
+            self._store_data(self.heart_fact,'heart_fact_cleaned')
 
         except Exception as err:
             logger.exception(err)

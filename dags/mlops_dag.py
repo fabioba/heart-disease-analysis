@@ -14,6 +14,7 @@ from numpy import random
 
 from tasks.clean_data import CleanData
 from tasks.preprocess_data import PreprocessData
+from tasks.train_model import TrainModel
 
 logging.basicConfig(level=logging.WARN)
 logger = logging.getLogger(__name__)
@@ -22,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 mlflow.set_tracking_uri('http://mlflow:600')
 
-experiment = mlflow.set_experiment("Airflow_Example")
+experiment = mlflow.set_experiment("MLOps")
 
 
 def __clean_data(**context):
@@ -48,19 +49,21 @@ def __preprocess_data(**context):
 
         logger.info('__preprocess_data')
 
-        CleanData.run(context)
+        PreprocessData.run(context)
 
     except Exception as err:
         logger.exception(err)
         raise err
 
-def _task3():
+def __train_model(**context):
     """
-        This method is responsible for running _task3 logic
+    This method is responsible for training model
     """
     try:
 
-        logger.info('taks3')
+        logger.info('__train_model')
+
+        TrainModel.run(context)
 
     except Exception as err:
         logger.exception(err)
@@ -86,21 +89,21 @@ with DAG(
         )
 
 
-        t2 = PythonOperator(
+        preprocess_data_task = PythonOperator(
             task_id='t2',
             op_kwargs=dag.default_args,
             provide_context=True,
-            python_callable=_task2
+            python_callable=__preprocess_data
         )
 
-        t3 = PythonOperator(
+        train_model_task = PythonOperator(
             task_id='t3',
             op_kwargs=dag.default_args,
             provide_context=True,
-            python_callable=_task3
+            python_callable=__train_model
         )
 
-        t1 >> [t2, t3]
+        clean_data_task >> preprocess_data_task >> train_model_task 
 
 
 
