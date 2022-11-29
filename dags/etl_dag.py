@@ -23,8 +23,11 @@ logger = logging.getLogger(__name__)
 
 
 
-with DAG(dag_id='etl_dag', start_date=datetime(2022, 1, 1), 
-    schedule_interval='@daily', catchup=False) as dag:
+with DAG(
+    dag_id='etl_dag', 
+    start_date=datetime(2022, 1, 1), 
+    schedule_interval='@daily', 
+    catchup=False) as dag:
 
     start_operator = DummyOperator(task_id='Begin_execution',  dag=dag)
 
