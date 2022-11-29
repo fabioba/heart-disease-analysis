@@ -11,6 +11,7 @@ Create `docker-compose.yaml` which is responsible for running `Airflow` componen
 * airflow-scheduler
 * airflow-worker
 * airflow-triggerer
+* mlflow server
 
 From terminal, run the following command to start Airflow on port 8080:
 ```
@@ -24,6 +25,12 @@ After running docker container, visit the page: `localhost:8080`
 And log into the Airflow world!
 
 Populate the `dags` folder with all the DAGS needed for the project.
+Before running any DAGs, establish a connection with PostgreSQL.
+
+#### DAGS - ETL
+
+This DAG is responsible for extracting data (locally), transform and load into a PostgreSQL table.
+![img](docs/imgs/etl_workflow.drawio.png)
 
 
 ### MLFlow
@@ -38,6 +45,30 @@ mlflow.set_tracking_uri('http://mlflow:600')
 
 After updating the URI of the MLFlow server, create a new connection on `Airflow`.
 
+
+## Data Sources
+The raw data comes from Kaggle and below there's the schema:
+```yaml
+CREATE TABLE IF NOT EXISTS public.raw_heart_disease(
+    age int,
+    sex varchar,
+    cp int,
+    trestbps int,
+    chol int,
+    fbs int,
+    restecg int,
+    thalach int,
+    exang int,
+    oldpeak float,
+    slope int,
+    ca int,
+    thal int,
+    target int
+)
+
+```
+
+
 ### Tech Stack
 * Airflow
 * MLflow
@@ -47,3 +78,6 @@ After updating the URI of the MLFlow server, create a new connection on `Airflow
 
 ### References
 * [Airflow Docker](https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html)
+* [MLOps deployment](https://towardsdatascience.com/ml-model-deployment-strategies-72044b3c1410)
+* [Integrate MLFlow](https://medium.com/@kaanboke/step-by-step-mlflow-implementations-a9872dd32d9b)
+* [Productionize on Docker](https://medium.com/cometheartbeat/create-an-mlops-pipeline-with-github-and-docker-hub-in-minutes-4a1515b6a551)
