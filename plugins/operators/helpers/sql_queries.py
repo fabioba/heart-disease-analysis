@@ -16,8 +16,8 @@ class SqlQueries:
         SELECT
             distinct 
             account_stage.account_id,
-            account_stage.age,
-            account_stage.sex
+            account_stage.sex,
+            account_stage.age
         FROM 
             heart_analysis.account_stage as account_stage
         LEFT JOIN 
@@ -55,6 +55,7 @@ class SqlQueries:
     """)
 
     insert_heart_fact = ("""
+    INSERT INTO heart_analysis.heart_fact
         SELECT
             distinct 
             account_dim.account_id,
@@ -79,9 +80,9 @@ class SqlQueries:
         ON 
             account_dim.account_id = heart_disease_dim.account_id
         LEFT JOIN 
-            heart_fact
+            heart_analysis.heart_fact as heart_fact
         ON
             account_dim.account_id = heart_fact.account_id
         WHERE 
-            heart_fact.account_id is NULL
+            heart_fact.account_id is NULL;
     """)

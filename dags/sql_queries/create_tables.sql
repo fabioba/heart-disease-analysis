@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS heart_analysis.heart_fact(
 	"account_id" varchar,
     "age" int,
-    "sex" varchar,
+    "sex" int,
     "cp" int,
     "trestbps" int,
     "chol" int,
@@ -52,13 +52,13 @@ CREATE TABLE IF NOT EXISTS heart_analysis.heart_disease_stage(
 
 CREATE TABLE IF NOT EXISTS heart_analysis.account_stage(
 	"account_id" varchar,
-    "sex" varchar,
+    "sex" int,
     "age" int
 );
 
 CREATE TABLE IF NOT EXISTS heart_analysis.account_dim(
 	"account_id" varchar,
-    "sex" varchar,
+    "sex" int,
     "age" int,
     PRIMARY KEY("account_id")
 );

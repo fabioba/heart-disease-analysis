@@ -34,6 +34,11 @@ Before running any DAGs, establish a connection with PostgreSQL.
 This DAG is responsible for extracting data (locally), transform and load into a PostgreSQL table.
 ![img](docs/imgs/etl_workflow.drawio.png)
 
+It's possible to review PostgreSQL tables from PgAdmin.
+Below there's the ETL workflow on Airflow:
+![img](docs/imgs/etl_dag.png)
+
+
 
 ### MLFlow
 On the `docker-compose.yaml` includes the `mlflow` container in the `services` section.
@@ -51,10 +56,10 @@ After updating the URI of the MLFlow server, create a new connection on `Airflow
 ## Data Sources
 Below there are the schemas of `heart_fact`, `heart_disease_dim` and `account_dim`.
 ```yaml
-CREATE TABLE IF NOT EXISTS public.heart_fact(
+CREATE TABLE IF NOT EXISTS heart_analysis.heart_fact(
 	"account_id" varchar,
     "age" int,
-    "sex" varchar,
+    "sex" int,
     "cp" int,
     "trestbps" int,
     "chol" int,
@@ -69,7 +74,7 @@ CREATE TABLE IF NOT EXISTS public.heart_fact(
     "target" int
 );
 
-CREATE TABLE IF NOT EXISTS public.heart_disease_dim(
+CREATE TABLE IF NOT EXISTS heart_analysis.heart_disease_dim(
 	"account_id" varchar,
     "cp" int,
     "trestbps" int,
@@ -85,10 +90,10 @@ CREATE TABLE IF NOT EXISTS public.heart_disease_dim(
     "target" int
 );
 
-CREATE TABLE IF NOT EXISTS public.account_dim(
+CREATE TABLE IF NOT EXISTS heart_analysis.account_dim(
 	"account_id" varchar,
     "age" int,
-    "sex" varchar
+    "sex" int
 );
 ```
 ![alt](docs/imgs/er.drawio.png)
@@ -99,6 +104,7 @@ CREATE TABLE IF NOT EXISTS public.account_dim(
 * MLflow
 * Docker
 * Python
+* PostgreSQL
 
 
 ### References
