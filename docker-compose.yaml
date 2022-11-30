@@ -55,12 +55,13 @@ x-airflow-common:
     AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0
     AIRFLOW__CORE__FERNET_KEY: ''
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
-    AIRFLOW__CORE__LOAD_EXAMPLES: 'true'
-    _PIP_ADDITIONAL_REQUIREMENTS: 'mlflow==1.29.0'
+    AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+    _PIP_ADDITIONAL_REQUIREMENTS: 'mlflow scikit-learn'
   volumes:
     - ./dags:/opt/airflow/dags
     - ./logs:/opt/airflow/logs
     - ./plugins:/opt/airflow/plugins
+    - ./data:/opt/airflow/plugins/operators/data
   user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-50000}"
   depends_on:
     redis:
@@ -72,11 +73,11 @@ x-airflow-common:
 
 services:
 
-  mlflow:
-    build:
-      dockerfile: docker_mlflow/Dockerfile
-    ports:
-      - 600:600
+  #mlflow:
+  #  build:
+  #    dockerfile: docker_mlflow/Dockerfile
+  #  ports:
+  #    - 600:600
 
   postgres:
     image: postgres:13
@@ -85,12 +86,27 @@ services:
       POSTGRES_PASSWORD: airflow
       POSTGRES_DB: airflow
     volumes:
+      - ./data:/data
       - postgres-db-volume:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "airflow"]
       interval: 5s
       retries: 5
     restart: always
+    ports:
+      - "5432:5432"
+
+
+  pgadmin:
+    container_name: pgadmin4_container
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: airflow
+    ports:
+      - "5050:80"
+
 
   redis:
     image: redis:latest
