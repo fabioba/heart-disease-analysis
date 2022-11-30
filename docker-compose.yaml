@@ -73,11 +73,11 @@ x-airflow-common:
 
 services:
 
-  #mlflow:
-  #  build:
-  #    dockerfile: docker_mlflow/Dockerfile
-  #  ports:
-  #    - 600:600
+  mlflow:
+    build:
+      dockerfile: docker_mlflow/Dockerfile
+    ports:
+      - 600:600
 
   postgres:
     image: postgres:13

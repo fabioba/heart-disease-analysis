@@ -71,7 +71,8 @@ CREATE TABLE IF NOT EXISTS heart_analysis.heart_fact(
     "slope" int,
     "ca" int,
     "thal" int,
-    "target" int
+    "target" int,
+    PRIMARY KEY("account_id")
 );
 
 CREATE TABLE IF NOT EXISTS heart_analysis.heart_disease_dim(
@@ -87,13 +88,15 @@ CREATE TABLE IF NOT EXISTS heart_analysis.heart_disease_dim(
     "slope" int,
     "ca" int,
     "thal" int,
-    "target" int
+    "target" int,
+    PRIMARY KEY("account_id")
 );
 
 CREATE TABLE IF NOT EXISTS heart_analysis.account_dim(
 	"account_id" varchar,
     "age" int,
-    "sex" int
+    "sex" int,
+    PRIMARY KEY("account_id")
 );
 ```
 ![alt](docs/imgs/er.drawio.png)

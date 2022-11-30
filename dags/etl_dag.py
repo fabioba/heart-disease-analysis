@@ -78,5 +78,4 @@ with DAG(
         sql=SqlQueries.insert_heart_fact
     )
 
-
     start_operator >> create_table >> load_raw_tables >> load_dim_tables >> load_heart_fact
