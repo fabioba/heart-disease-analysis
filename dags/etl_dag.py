@@ -40,25 +40,33 @@ with DAG(
     )    
 
     # load raw data
-    load_raw_data = LoadDataOperator(
-        task_id='load_raw_data',
-        postgres_conn_id='postgres_default',
-        table='raw_heart_disease',
-        local_path='data/heart_raw.csv'
-    )
+    with TaskGroup(group_id='load_raw_tables') as load_raw_tables:
+
+        load_heart_raw_data = LoadDataOperator(
+            task_id='load_heart_raw_data',
+            postgres_conn_id='postgres_default',
+            table='heart_analysis.heart_disease_stage',
+            local_path='/opt/airflow/plugins/operators/data/heart_raw.csv'
+        )
+        load_account_raw_data = LoadDataOperator(
+            task_id='load_account_raw_data',
+            postgres_conn_id='postgres_default',
+            table='heart_analysis.account_stage',
+            local_path='/opt/airflow/plugins/operators/data/account_raw.csv'
+        )
 
     # dimension tables
     with TaskGroup(group_id='load_dim_tables') as load_dim_tables:
 
         load_account_dim = LoadDimensionOperator(
             sql=SqlQueries.insert_account_dimension,
-            table ='account_dim',
+            table ='heart_analysis.account_dim',
             postgres_conn_id='postgres_default',
             task_id='load_account_dim'
         )
         load_heart_dis_dim = LoadDimensionOperator(
             sql=SqlQueries.insert_heart_disease_dimension,
-            table ='heart_disease_dim',
+            table ='heart_analysis.heart_disease_dim',
             postgres_conn_id='postgres_default',
             task_id='load_heart_dis_dim'
         )
@@ -70,4 +78,5 @@ with DAG(
         sql=SqlQueries.insert_heart_fact
     )
 
-    start_operator >> create_table >> load_dim_tables >> load_heart_fact
+
+    start_operator >> create_table >> load_raw_tables >> load_dim_tables >> load_heart_fact

@@ -12,6 +12,8 @@ Create `docker-compose.yaml` which is responsible for running `Airflow` componen
 * airflow-worker
 * airflow-triggerer
 * mlflow server
+* postgresql
+* pgadmin
 
 From terminal, run the following command to start Airflow on port 8080:
 ```

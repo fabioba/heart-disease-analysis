@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS public.heart_fact(
+CREATE TABLE IF NOT EXISTS heart_analysis.heart_fact(
 	"account_id" varchar,
     "age" int,
     "sex" varchar,
@@ -13,10 +13,28 @@ CREATE TABLE IF NOT EXISTS public.heart_fact(
     "slope" int,
     "ca" int,
     "thal" int,
-    "target" int
+    "target" int,
+    PRIMARY KEY("account_id")
 );
 
-CREATE TABLE IF NOT EXISTS public.heart_disease_dim(
+CREATE TABLE IF NOT EXISTS heart_analysis.heart_disease_dim(
+	"account_id" varchar,
+    "cp" int,
+    "trestbps" int,
+    "chol" int,
+    "fbs" int,
+    "restecg" int,
+    "thalach" int,
+    "exang" int,
+    "oldpeak" float,
+    "slope" int,
+    "ca" int,
+    "thal" int,
+    "target" int,
+    PRIMARY KEY("account_id")
+);
+
+CREATE TABLE IF NOT EXISTS heart_analysis.heart_disease_stage(
 	"account_id" varchar,
     "cp" int,
     "trestbps" int,
@@ -32,30 +50,15 @@ CREATE TABLE IF NOT EXISTS public.heart_disease_dim(
     "target" int
 );
 
-CREATE TABLE IF NOT EXISTS public.heart_disease_stage(
+CREATE TABLE IF NOT EXISTS heart_analysis.account_stage(
 	"account_id" varchar,
-    "cp" int,
-    "trestbps" int,
-    "chol" int,
-    "fbs" int,
-    "restecg" int,
-    "thalach" int,
-    "exang" int,
-    "oldpeak" float,
-    "slope" int,
-    "ca" int,
-    "thal" int,
-    "target" int
+    "sex" varchar,
+    "age" int
 );
 
-CREATE TABLE IF NOT EXISTS public.account_stage(
+CREATE TABLE IF NOT EXISTS heart_analysis.account_dim(
 	"account_id" varchar,
+    "sex" varchar,
     "age" int,
-    "sex" varchar
-);
-
-CREATE TABLE IF NOT EXISTS public.account_dim(
-	"account_id" varchar,
-    "age" int,
-    "sex" varchar
+    PRIMARY KEY("account_id")
 );

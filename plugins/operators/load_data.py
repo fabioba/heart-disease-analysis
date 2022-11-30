@@ -7,7 +7,8 @@ Author: Fabio Barbazza
 from airflow.models import BaseOperator
 from airflow.hooks.postgres_hook import PostgresHook
 from airflow.utils.decorators import apply_defaults
-
+import os
+import pandas as pd
 
 
 class LoadDataOperator(BaseOperator):
@@ -18,8 +19,8 @@ class LoadDataOperator(BaseOperator):
     copy_sql_from_csv = """
                 COPY {}
                 FROM '{}'
-                IGNOREHEADER 1
-                DELIMITER ';'
+                DELIMITER ','
+                CSV HEADER;
                 """
 
     @apply_defaults
@@ -44,6 +45,9 @@ class LoadDataOperator(BaseOperator):
 
             self.log.info('connect to postgres')
 
+            df_input_table = pd.read_csv(self.local_path, delimiter=';')
+            self.log.info('df_input_table: {}'.format(df_input_table.shape))
+
             postgres = PostgresHook(postgres_conn_id = self.postgres_conn_id)
 
             formatted_sql = LoadDataOperator.copy_sql_from_csv.format(
@@ -52,8 +56,13 @@ class LoadDataOperator(BaseOperator):
             )
 
             self.log.info('formatted_sql: {}'.format(formatted_sql))
+            self.log.info('os.getcwd(): {}'.format(os.getcwd()))
 
-            postgres.run(formatted_sql)
+            # convert into rows
+            rows = list(df_input_table.itertuples(index=False, name=None))
+            postgres.insert_rows(table = self.table, rows=rows)
+
+            #postgres.run(formatted_sql)
 
             #creating_hear_dis_raw_table = PostgresOperator(
             #    task_id="creating_experiment_tracking_table",

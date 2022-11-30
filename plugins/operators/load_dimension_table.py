@@ -12,7 +12,7 @@ class LoadDimensionOperator(BaseOperator):
 
     ui_color = '#80BD9E'
     dim_query_raw = """
-        INSERT INTO public.{table}
+        INSERT INTO {table}
         {sql}
     """
 

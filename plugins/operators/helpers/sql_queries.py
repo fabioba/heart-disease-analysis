@@ -19,9 +19,9 @@ class SqlQueries:
             account_stage.age,
             account_stage.sex
         FROM 
-            account_stage
+            heart_analysis.account_stage as account_stage
         LEFT JOIN 
-            account_dim
+            heart_analysis.account_dim as account_dim
         ON 
             account_stage.account_id = account_dim.account_id
         WHERE
@@ -45,9 +45,9 @@ class SqlQueries:
             heart_disease_stage.thal,
             heart_disease_stage.target
         FROM 
-            heart_disease_stage
+            heart_analysis.heart_disease_stage as heart_disease_stage
         LEFT JOIN 
-            heart_disease_dim
+            heart_analysis.heart_disease_dim as heart_disease_dim
         ON 
             heart_disease_stage.account_id = heart_disease_dim.account_id
         WHERE
@@ -73,17 +73,15 @@ class SqlQueries:
             heart_disease_dim.thal,
             heart_disease_dim.target
         FROM 
-            account_dim
+            heart_analysis.account_dim as account_dim
         LEFT JOIN 
-            heart_disease_dim
+            heart_analysis.heart_disease_dim as heart_disease_dim
         ON 
             account_dim.account_id = heart_disease_dim.account_id
         LEFT JOIN 
             heart_fact
         ON
-            account_stage.account_id = heart_fact.account_id
+            account_dim.account_id = heart_fact.account_id
         WHERE 
             heart_fact.account_id is NULL
-        group by 
-            1,2,3,4
     """)
