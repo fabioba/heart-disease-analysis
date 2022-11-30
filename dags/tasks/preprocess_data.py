@@ -36,7 +36,11 @@ class PreprocessData(generic_task.GenericTask):
 
             self.__process_data()
 
-            self._store_data()
+            self._store_data(self.__x_train, 'heart_x_train','heart_analysis')
+            self._store_data(self.__x_test, 'heart_x_test','heart_analysis')
+            self._store_data(self.__y_train, 'heart_y_train','heart_analysis')
+            self._store_data(self.__y_test, 'heart_y_test','heart_analysis')
+
 
         except Exception as err:
             logger.exception(err)
@@ -61,13 +65,7 @@ class PreprocessData(generic_task.GenericTask):
             scaler = preprocessing.StandardScaler()
             all_features_scaled = scaler.fit_transform(all_features)
 
-            (x_train, x_test, y_train, y_test) = train_test_split(all_features_scaled, all_classes,test_size=0.70, random_state=0)
-            
-            self._store_data(x_train, 'heart_x_train')
-            self._store_data(x_test, 'heart_x_test')
-            self._store_data(y_train, 'heart_y_train')
-            self._store_data(y_test, 'heart_y_test')
-
+            (self.__x_train, self.__x_test, self.__y_train, self.__y_test) = train_test_split(all_features_scaled, all_classes,test_size=0.70, random_state=0)
 
             logger.info('__process_data success')
 

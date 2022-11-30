@@ -14,8 +14,8 @@ class CleanData(generic_task.GenericTask):
     """
     """
 
-    def __init__(self,**context):
-        generic_task.GenericTask.__init__(self, context)
+    def __init__(self,table_name):
+        generic_task.GenericTask.__init__(self, table_name)
 
 
     def run(self):
@@ -32,7 +32,7 @@ class CleanData(generic_task.GenericTask):
 
             self.__clean_data()
 
-            self._store_data(self.heart_fact,'heart_fact_cleaned')
+            self._store_data(self.heart_fact,'heart_fact_cleaned','heart_analysis')
 
         except Exception as err:
             logger.exception(err)

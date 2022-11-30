@@ -5,6 +5,7 @@ Date: Oct, 2022
 Author: Fabio Barbazza
 """
 from sklearn.linear_model import LogisticRegression
+import mlflow
 
 from tasks import generic_task
 import logging 
@@ -37,8 +38,6 @@ class TrainModel(generic_task.GenericTask):
 
             self.__train_model(x_train, y_train, x_test, y_test)
 
-            self._store_data()
-
         except Exception as err:
             logger.exception(err)
             raise err
@@ -51,16 +50,22 @@ class TrainModel(generic_task.GenericTask):
         """
         try:
 
+            experiment = mlflow.set_experiment("train_model")
 
-            logger.info('__train_model starting')
+            with mlflow.start_run():
 
-            model = LogisticRegression()
+                logger.info('__train_model starting')
 
-            model.fit(x_train,y_train)
-            
-            y_pred = model.predict(x_test)
+                model = LogisticRegression()
 
-            lr_score=model.score(x_test,y_test)*100
+                model.fit(x_train,y_train)
+                
+                y_pred = model.predict(x_test)
+
+                lr_score=model.score(x_test,y_test)*100
+
+                mlflow.log_param("model_type",'Logistic_Regression')
+                mlflow.log_metric("model_score",lr_score)
 
 
             logger.info('__train_model success')

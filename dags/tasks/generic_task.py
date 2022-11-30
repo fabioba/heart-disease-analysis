@@ -7,6 +7,8 @@ Author: Fabio Barbazza
 from airflow.hooks.postgres_hook import PostgresHook
 
 import logging 
+import pandas as pd
+
 
 logging.basicConfig(level=logging.WARN)
 logger = logging.getLogger(__name__)
@@ -16,8 +18,8 @@ class GenericTask():
     
     """
 
-    def __init__(self,**context):
-        self.table = context["params"]["table"]
+    def __init__(self,table_name):
+        self.table = table_name
 
         logger.info('self.table')
 
@@ -31,22 +33,39 @@ class GenericTask():
         """
         try:
 
-            logger.info('__read_data starting')
+            logger.info('_get_data starting')
 
-            sql_stmt = "SELECT * FROM {}".format(table_name)
+            sql_stmt = "SELECT * FROM heart_analysis.{}".format(table_name)
             pg_hook = PostgresHook(
-                postgres_conn_id='postgres_default',
-                schema='public'
+                postgres_conn_id='postgres_default'
             )
+
             pg_conn = pg_hook.get_conn()
             cursor = pg_conn.cursor()
             cursor.execute(sql_stmt)
 
-            read_df = cursor.fetchall()
+            read_list = cursor.fetchall()
 
-            logger.info('read_df shape: {}'.format(read_df.shape))
+            read_df = pd.DataFrame(data = read_list, columns = ["account_id" ,
+                                                                "age" ,
+                                                                "sex" ,
+                                                                "cp" ,
+                                                                "trestbps" ,
+                                                                "chol" ,
+                                                                "fbs" ,
+                                                                "restecg" ,
+                                                                "thalach" ,
+                                                                "exang" ,
+                                                                "oldpeak" ,
+                                                                "slope" ,
+                                                                "ca" ,
+                                                                "thal" ,
+                                                                "target"])
 
-            logger.info('__read_data success')
+            logger.info('read_df: {}'.format(read_df))
+            #logger.info('read_df shape: {}'.format(read_df.shape))
+
+            logger.info('_get_data success')
 
             return read_df
 
@@ -56,21 +75,31 @@ class GenericTask():
             raise err
 
 
-    def _store_data(self, df_to_store, table_name):
+    def _store_data(self, df_to_store, table_name, schema_name):
         """
         This method is responsible for storing data
 
         Args:
             df_to_store(pd dataframe)
             table_name(str)
+            schema_name(str)
         """
         try:
 
 
             logger.info('__store_data starting')
 
-            postgres_sql_upload = PostgresHook(postgres_conn_id='postgres_default', schema='public') 
-            postgres_sql_upload.insert_rows(table_name, df_to_store)
+            table_name_complete = '{}.{}'.format(schema_name, table_name)
+
+            logger.info('table_name complete: {}'.format(table_name_complete))
+
+            postgres_sql_upload = PostgresHook(postgres_conn_id='postgres_default') 
+
+            # convert df into rows
+            rows = list(df_to_store.itertuples(index=False, name=None))
+
+            # insert rows
+            postgres_sql_upload.insert_rows(table_name, rows)
 
 
             logger.info('__store_data success')
