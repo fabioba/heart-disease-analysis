@@ -40,6 +40,7 @@ Both parts are implemented in `Airflow` as dag. So, each of them is composed by 
 <a name="system_design_dwh"/>
 
 ## System Design - Data Warehouse development
+![img](docs/imgs/etl_workflow.drawio.png)
 
 <a name="system_design_data_source"/>
 
@@ -52,7 +53,6 @@ The input data are stored locally in a way that they are available from Docker c
 The transformation and loading operations are accomplished by the etl_dag script run on Airflow.
 
 This DAG is responsible for extracting data (locally), transform and load into a `PostgreSQL` table.
-![img](docs/imgs/etl_workflow.drawio.png)
 
 It's possible to review `PostgreSQL` tables from `PgAdmin`.
 Below there's the ETL workflow on Airflow:
