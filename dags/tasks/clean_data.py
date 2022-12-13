@@ -28,11 +28,23 @@ class CleanData(generic_task.GenericTask):
         """
         try:
 
-            self.heart_fact = self._get_data('heart_fact')
+            columns_to_unpack = ["account_id" ,"age" , "sex" , "cp" ,
+                                                                "trestbps" ,
+                                                                "chol" ,
+                                                                "fbs" ,
+                                                                "restecg" ,
+                                                                "thalach" ,
+                                                                "exang" ,
+                                                                "oldpeak" ,
+                                                                "slope" ,
+                                                                "ca" ,
+                                                                "thal" ,
+                                                                "target"]
+            self.heart_fact = self._get_data('heart_fact', columns_to_unpack)
 
             self.__clean_data()
 
-            self._store_data(self.heart_fact,'heart_fact_cleaned','heart_analysis')
+            self._store_df(self.heart_fact,'heart_fact_cleaned','heart_analysis')
 
         except Exception as err:
             logger.exception(err)

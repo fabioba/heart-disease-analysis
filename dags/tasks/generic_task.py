@@ -24,9 +24,13 @@ class GenericTask():
         logger.info('self.table')
 
 
-    def _get_data(self, table_name):
+    def _get_data(self, table_name, columns_to_unpack):
         """
         This method is responsible for reading data
+
+        Args:
+            table_name(str)
+            columns_to_unpack(list)
 
         Returns:
             read_df(pandas df)
@@ -46,22 +50,7 @@ class GenericTask():
 
             read_list = cursor.fetchall()
 
-            read_df = pd.DataFrame(data = read_list, columns = ["account_id" ,
-                                                                "age" ,
-                                                                "sex" ,
-                                                                "cp" ,
-                                                                "trestbps" ,
-                                                                "chol" ,
-                                                                "fbs" ,
-                                                                "restecg" ,
-                                                                "thalach" ,
-                                                                "exang" ,
-                                                                "oldpeak" ,
-                                                                "slope" ,
-                                                                "ca" ,
-                                                                "thal" ,
-                                                                "target"])
-            print(type(read_df))
+            read_df = pd.DataFrame(data = read_list, columns = columns_to_unpack)
             logger.info('read_df: {}'.format(read_df.shape))
             #logger.info('read_df shape: {}'.format(read_df.shape))
 
@@ -75,7 +64,7 @@ class GenericTask():
             raise err
 
 
-    def _store_data(self, df_to_store, table_name, schema_name):
+    def _store_df(self, df_to_store, table_name, schema_name):
         """
         This method is responsible for storing data
 
@@ -87,7 +76,7 @@ class GenericTask():
         try:
 
 
-            logger.info('__store_data starting')
+            logger.info('_store_df starting')
 
             table_name_complete = '{}.{}'.format(schema_name, table_name)
 
@@ -100,23 +89,96 @@ class GenericTask():
 
             tuples = (','.join(str(x) for x in rows))
 
-            logger.info('tuples:{}'.format(tuples))
+            logger.info('len tuples:{}'.format(len(tuples)))
 
-            sql_insert = "INSERT INTO heart_analysis.heart_fact_cleaned values {} ON CONFLICT DO NOTHING".format(tuples)
+            sql_insert = "INSERT INTO {}.{} values {} ON CONFLICT DO NOTHING".format(schema_name, table_name,tuples)
 
 
             logger.info('sql_insert: {}'.format(sql_insert))
-            
+
             postgres_sql_upload.run(sql_insert)
 
-            # insert rows
-            #postgres_sql_upload.insert_rows(table_name_complete, rows)
+            logger.info('_store_df success')
+
+        except Exception as err:
+            logger.exception(err)
+            raise err
 
 
-            #INSERT INTO heart_analysis.heart_fact_cleaned values '{{ params.values }}' ON CONFLICT DO NOTHING
+    def _store_nested_array(self, arr_to_store, table_name, schema_name):
+        """
+        This method is responsible for storing data
+
+        Args:
+            arr_to_store(numpy array)
+            table_name(str)
+            schema_name(str)
+        """
+        try:
 
 
-            logger.info('__store_data success')
+            logger.info('_store_array starting')
+
+            table_name_complete = '{}.{}'.format(schema_name, table_name)
+
+            logger.info('table_name complete: {}'.format(table_name_complete))
+
+            postgres_sql_upload = PostgresHook(postgres_conn_id='postgres_default') 
+
+            # convert arr to tuple
+            str_arr = [tuple(row) for row in arr_to_store]
+            tuples = ','.join(str(x) for x in str_arr)
+
+            logger.info('len tuples:{}'.format(len(tuples)))
+
+            sql_insert = "INSERT INTO {}.{} values {} ON CONFLICT DO NOTHING".format(schema_name, table_name,tuples)
+
+
+            logger.info('sql_insert: {}'.format(sql_insert))
+
+            postgres_sql_upload.run(sql_insert)
+
+            logger.info('_store_array success')
+
+        except Exception as err:
+            logger.exception(err)
+            raise err
+
+
+    def _store_array(self, arr_to_store, table_name, schema_name):
+        """
+        This method is responsible for storing data
+
+        Args:
+            arr_to_store(numpy array)
+            table_name(str)
+            schema_name(str)
+        """
+        try:
+
+
+            logger.info('_store_array starting')
+
+            table_name_complete = '{}.{}'.format(schema_name, table_name)
+
+            logger.info('table_name complete: {}'.format(table_name_complete))
+
+            postgres_sql_upload = PostgresHook(postgres_conn_id='postgres_default') 
+
+            # convert arr to tuple
+            tuples = ','.join(str('({})'.format(x)) for x in arr_to_store)
+
+            
+            logger.info('len tuples:{}'.format(len(tuples)))
+
+            sql_insert = "INSERT INTO {}.{} values {} ON CONFLICT DO NOTHING".format(schema_name, table_name,tuples)
+
+
+            logger.info('sql_insert: {}'.format(sql_insert))
+
+            postgres_sql_upload.run(sql_insert)
+
+            logger.info('_store_array success')
 
         except Exception as err:
             logger.exception(err)

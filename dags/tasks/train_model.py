@@ -30,11 +30,23 @@ class TrainModel(generic_task.GenericTask):
         3. store data into PostgreSQL
         """
         try:
+            columns_to_unpack_x = ["account_id" ,"age" , "sex" , "cp" ,
+                                                                "trestbps" ,
+                                                                "chol" ,
+                                                                "fbs" ,
+                                                                "restecg" ,
+                                                                "thalach" ,
+                                                                "exang" ,
+                                                                "oldpeak" ,
+                                                                "slope" ,
+                                                                "ca" ,
+                                                                "thal"]
+            columns_to_unpack_y= ["target"]
 
-            x_train = self._get_data('heart_x_train')
-            y_train = self._get_data('heart_y_train')
-            x_test = self._get_data('heart_x_test')
-            y_test = self._get_data('heart_y_test')
+            x_train = self._get_data('heart_x_train', columns_to_unpack_x)
+            y_train = self._get_data('heart_y_train', columns_to_unpack_y)
+            x_test = self._get_data('heart_x_test', columns_to_unpack_x)
+            y_test = self._get_data('heart_y_test', columns_to_unpack_y)
 
             self.__train_model(x_train, y_train, x_test, y_test)
 
