@@ -21,7 +21,7 @@
 <a name="business_context"/>
 
 ## Business Context
-The goal of this project is to run a analyze heart data to forecast diseases.
+The goal of this project is to analyze heart data to predict hypothetical future diseases.
 
 <a name="data_sources"/>
 
@@ -55,7 +55,7 @@ The transformation and loading operations are accomplished by the etl_dag script
 This DAG is responsible for extracting data (locally), transform and load into a `PostgreSQL` table.
 
 It's possible to review `PostgreSQL` tables from `PgAdmin`.
-Below there's the ETL workflow on Airflow:
+Below there's the `ETL` workflow on `Airflow`:
 ![img](docs/imgs/etl_dag.png)
 
 
@@ -166,8 +166,11 @@ After updating the URI of the MLFlow server, create a new connection on `Airflow
 <a name="postgresql"/>
 
 ### PostgreSQL
+On the `docker-compose.yaml` includes the `postgres` and `pgadmin` containers in the `services` section.
+First of all, access to `localhost:5050` to create a connection to `postgres`
+![img](docs/imgs/pg_admin.png)
 
-
+Then, on the section server it's easy to monitor and query those tables.
 
 <a name="references"/>
 
