@@ -17,7 +17,7 @@ class TrainModel(generic_task.GenericTask):
     """
     """
 
-    def __init__(self,**context):
+    def __init__(self,context):
         generic_task.GenericTask.__init__(self, context)
 
 
@@ -43,10 +43,17 @@ class TrainModel(generic_task.GenericTask):
                                                                 "thal"]
             columns_to_unpack_y= ["target"]
 
-            x_train = self._get_data('heart_x_train', columns_to_unpack_x)
-            y_train = self._get_data('heart_y_train', columns_to_unpack_y)
-            x_test = self._get_data('heart_x_test', columns_to_unpack_x)
-            y_test = self._get_data('heart_y_test', columns_to_unpack_y)
+            sql_x_train = "SELECT * FROM heart_analysis.heart_x_train"
+            x_train = self._get_data(columns_to_unpack_x, sql_x_train)
+
+            sql_y_train = "SELECT * FROM heart_analysis.heart_y_train"
+            y_train = self._get_data(columns_to_unpack_y, sql_y_train)
+
+            sql_x_test = "SELECT * FROM heart_analysis.heart_x_test"
+            x_test = self._get_data(columns_to_unpack_x, sql_x_test)
+
+            sql_y_test = "SELECT * FROM heart_analysis.heart_y_test"
+            y_test = self._get_data(columns_to_unpack_y, sql_y_test)
 
             self.__train_model(x_train, y_train, x_test, y_test)
 

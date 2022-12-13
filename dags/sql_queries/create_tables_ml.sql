@@ -18,7 +18,8 @@ CREATE TABLE IF NOT EXISTS heart_analysis.heart_fact_cleaned(
     PRIMARY KEY("account_id","pipeline_run")
 );
 
-CREATE TABLE IF NOT EXISTS heart_analysis.heart_x_train(
+DROP TABLE heart_analysis.heart_x_train;
+CREATE TABLE heart_analysis.heart_x_train(
     "age" int,
     "sex" int,
     "cp" int,
@@ -31,11 +32,10 @@ CREATE TABLE IF NOT EXISTS heart_analysis.heart_x_train(
     "oldpeak" float,
     "slope" int,
     "ca" int,
-    "thal" int,
-    "pipeline_run" varchar
+    "thal" int
 );
-
-CREATE TABLE IF NOT EXISTS heart_analysis.heart_x_test(
+DROP TABLE heart_analysis.heart_x_test;
+CREATE TABLE heart_analysis.heart_x_test(
     "age" int,
     "sex" int,
     "cp" int,
@@ -48,16 +48,15 @@ CREATE TABLE IF NOT EXISTS heart_analysis.heart_x_test(
     "oldpeak" float,
     "slope" int,
     "ca" int,
-    "thal" int,
-    "pipeline_run" varchar
+    "thal" int
 );
 
-CREATE TABLE IF NOT EXISTS heart_analysis.heart_y_train(
-    "target" int,
-    "pipeline_run" varchar
+DROP TABLE heart_analysis.heart_y_train;
+CREATE TABLE  heart_analysis.heart_y_train(
+    "target" int
 );
 
-CREATE TABLE IF NOT EXISTS heart_analysis.heart_y_test(
-    "target" int,
-    "pipeline_run" varchar
+DROP TABLE heart_analysis.heart_y_test;
+CREATE TABLE heart_analysis.heart_y_test(
+    "target" int
 );

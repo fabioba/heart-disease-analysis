@@ -42,7 +42,8 @@ class PreprocessData(generic_task.GenericTask):
                                                                 "slope" ,
                                                                 "ca" ,
                                                                 "thal" ,
-                                                                "target"]
+                                                                "target",
+                                                                "pipeline_run"]
 
             sql_stmt = "SELECT * FROM heart_analysis.heart_fact_cleaned WHERE pipeline_run='{}'".format(self.run_id)
             self.heart_fact = self._get_data(columns_to_unpack, sql_stmt)
