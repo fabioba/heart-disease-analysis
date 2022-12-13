@@ -5,6 +5,7 @@ Date: Oct, 2022
 Author: Fabio Barbazza
 """
 from sklearn.linear_model import LogisticRegression
+import mlflow
 
 from tasks import generic_task
 import logging 
@@ -16,7 +17,7 @@ class TrainModel(generic_task.GenericTask):
     """
     """
 
-    def __init__(self,**context):
+    def __init__(self,context):
         generic_task.GenericTask.__init__(self, context)
 
 
@@ -29,15 +30,32 @@ class TrainModel(generic_task.GenericTask):
         3. store data into PostgreSQL
         """
         try:
+            columns_to_unpack_x = ["age" , "sex" , "cp" ,
+                                                                "trestbps" ,
+                                                                "chol" ,
+                                                                "fbs" ,
+                                                                "restecg" ,
+                                                                "thalach" ,
+                                                                "exang" ,
+                                                                "oldpeak" ,
+                                                                "slope" ,
+                                                                "ca" ,
+                                                                "thal"]
+            columns_to_unpack_y= ["target"]
 
-            x_train = self._get_data('heart_x_train')
-            y_train = self._get_data('heart_y_train')
-            x_test = self._get_data('heart_x_test')
-            y_test = self._get_data('heart_y_test')
+            sql_x_train = "SELECT * FROM heart_analysis.heart_x_train"
+            x_train = self._get_data(columns_to_unpack_x, sql_x_train)
+
+            sql_y_train = "SELECT * FROM heart_analysis.heart_y_train"
+            y_train = self._get_data(columns_to_unpack_y, sql_y_train)
+
+            sql_x_test = "SELECT * FROM heart_analysis.heart_x_test"
+            x_test = self._get_data(columns_to_unpack_x, sql_x_test)
+
+            sql_y_test = "SELECT * FROM heart_analysis.heart_y_test"
+            y_test = self._get_data(columns_to_unpack_y, sql_y_test)
 
             self.__train_model(x_train, y_train, x_test, y_test)
-
-            self._store_data()
 
         except Exception as err:
             logger.exception(err)
@@ -51,16 +69,22 @@ class TrainModel(generic_task.GenericTask):
         """
         try:
 
+            experiment = mlflow.set_experiment("train_model")
 
-            logger.info('__train_model starting')
+            with mlflow.start_run():
 
-            model = LogisticRegression()
+                logger.info('__train_model starting')
 
-            model.fit(x_train,y_train)
-            
-            y_pred = model.predict(x_test)
+                model = LogisticRegression()
 
-            lr_score=model.score(x_test,y_test)*100
+                model.fit(x_train,y_train)
+                
+                y_pred = model.predict(x_test)
+
+                lr_score=model.score(x_test,y_test)*100
+
+                mlflow.log_param("model_type",'Logistic_Regression')
+                mlflow.log_metric("model_score",lr_score)
 
 
             logger.info('__train_model success')

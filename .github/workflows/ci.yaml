@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  pull_request:
+    branches: 
+      - main
+
+jobs:
+
+  run-unit-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v4
+        with:
+          # Semantic version range syntax or exact version of a Python version
+          python-version: '3.8'
+          architecture: x64
+          cache: 'pip' # this is usefule since it retrieves requirements if already built
+      - name: Install dependencies from requirements/requirements.txt
+        run: pip install -r requirements/requirements.txt
+        env:
+          MY_GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+        run: 
+          python -m pytest -r tests/

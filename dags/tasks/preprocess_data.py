@@ -18,7 +18,7 @@ class PreprocessData(generic_task.GenericTask):
     
     """
 
-    def __init__(self,**context):
+    def __init__(self,context):
         generic_task.GenericTask.__init__(self, context)
 
 
@@ -31,12 +31,30 @@ class PreprocessData(generic_task.GenericTask):
         3. store data
         """
         try:
+            columns_to_unpack = ["account_id" ,"age" , "sex" , "cp" ,
+                                                                "trestbps" ,
+                                                                "chol" ,
+                                                                "fbs" ,
+                                                                "restecg" ,
+                                                                "thalach" ,
+                                                                "exang" ,
+                                                                "oldpeak" ,
+                                                                "slope" ,
+                                                                "ca" ,
+                                                                "thal" ,
+                                                                "target",
+                                                                "pipeline_run"]
 
-            self.heart_fact = self._get_data('heart_fact_cleaned')
+            sql_stmt = "SELECT * FROM heart_analysis.heart_fact_cleaned WHERE pipeline_run='{}'".format(self.run_id)
+            self.heart_fact = self._get_data(columns_to_unpack, sql_stmt)
 
             self.__process_data()
 
-            self._store_data()
+            self._store_nested_array(self.__x_train, 'heart_x_train','heart_analysis','ON CONFLICT DO NOTHING')
+            self._store_nested_array(self.__x_test, 'heart_x_test','heart_analysis','ON CONFLICT DO NOTHING')
+            self._store_array(self.__y_train, 'heart_y_train','heart_analysis')
+            self._store_array(self.__y_test, 'heart_y_test','heart_analysis')
+
 
         except Exception as err:
             logger.exception(err)
@@ -54,6 +72,7 @@ class PreprocessData(generic_task.GenericTask):
             logger.info('__process_data starting')
 
             all_classes = self.heart_fact['target'].values
+            self.heart_fact.fillna(0, inplace = True)
 
             all_features = self.heart_fact[['age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 'restecg', 'thalach',
                 'exang', 'oldpeak', 'slope', 'ca', 'thal']].values
@@ -61,13 +80,8 @@ class PreprocessData(generic_task.GenericTask):
             scaler = preprocessing.StandardScaler()
             all_features_scaled = scaler.fit_transform(all_features)
 
-            (x_train, x_test, y_train, y_test) = train_test_split(all_features_scaled, all_classes,test_size=0.70, random_state=0)
-            
-            self._store_data(x_train, 'heart_x_train')
-            self._store_data(x_test, 'heart_x_test')
-            self._store_data(y_train, 'heart_y_train')
-            self._store_data(y_test, 'heart_y_test')
 
+            (self.__x_train, self.__x_test, self.__y_train, self.__y_test) = train_test_split(all_features_scaled, all_classes,test_size=0.70, random_state=0)
 
             logger.info('__process_data success')
 

@@ -35,7 +35,7 @@ class LoadDimensionOperator(BaseOperator):
         """
         try:
 
-            redshift = PostgresHook(postgres_conn_id = self.conn_id)
+            postgres = PostgresHook(postgres_conn_id = self.conn_id)
 
             dim_query = LoadDimensionOperator.dim_query_raw.format(
                 table=self.table,
@@ -45,7 +45,7 @@ class LoadDimensionOperator(BaseOperator):
 
             self.log.info('dim_query: {} running'.format(dim_query))
 
-            redshift.run(dim_query)
+            postgres.run(dim_query)
 
             self.log.info('dim_query: success')
 
