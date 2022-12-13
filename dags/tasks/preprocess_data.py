@@ -18,7 +18,7 @@ class PreprocessData(generic_task.GenericTask):
     
     """
 
-    def __init__(self,**context):
+    def __init__(self,context):
         generic_task.GenericTask.__init__(self, context)
 
 
@@ -43,12 +43,14 @@ class PreprocessData(generic_task.GenericTask):
                                                                 "ca" ,
                                                                 "thal" ,
                                                                 "target"]
-            self.heart_fact = self._get_data('heart_fact_cleaned', columns_to_unpack)
+
+            sql_stmt = "SELECT * FROM heart_analysis.heart_fact_cleaned WHERE pipeline_run='{}'".format(self.run_id)
+            self.heart_fact = self._get_data(columns_to_unpack, sql_stmt)
 
             self.__process_data()
 
-            self._store_nested_array(self.__x_train, 'heart_x_train','heart_analysis')
-            self._store_nested_array(self.__x_test, 'heart_x_test','heart_analysis')
+            self._store_nested_array(self.__x_train, 'heart_x_train','heart_analysis','ON CONFLICT DO NOTHING')
+            self._store_nested_array(self.__x_test, 'heart_x_test','heart_analysis','ON CONFLICT DO NOTHING')
             self._store_array(self.__y_train, 'heart_y_train','heart_analysis')
             self._store_array(self.__y_test, 'heart_y_test','heart_analysis')
 

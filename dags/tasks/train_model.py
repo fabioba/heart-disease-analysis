@@ -30,7 +30,7 @@ class TrainModel(generic_task.GenericTask):
         3. store data into PostgreSQL
         """
         try:
-            columns_to_unpack_x = ["account_id" ,"age" , "sex" , "cp" ,
+            columns_to_unpack_x = ["age" , "sex" , "cp" ,
                                                                 "trestbps" ,
                                                                 "chol" ,
                                                                 "fbs" ,

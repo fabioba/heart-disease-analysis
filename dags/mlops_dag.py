@@ -33,9 +33,8 @@ def __clean_data(**context):
     try:
 
         logger.info('__clean_data')
-        table_name = context["params"]["table"]
 
-        c_data = CleanData(table_name=table_name)
+        c_data = CleanData(context=context)
         c_data.run()
 
     except Exception as err:
@@ -93,7 +92,6 @@ with DAG(
 
     clean_data_task = PythonOperator(
         task_id='clean_data',
-        params={'table':'heart_fact'},
         provide_context=True,
         python_callable=__clean_data
     )
@@ -101,14 +99,12 @@ with DAG(
 
     preprocess_data_task = PythonOperator(
         task_id='preprocess_data',
-        op_kwargs=dag.default_args,
         provide_context=True,
         python_callable=__preprocess_data
     )
 
     train_model_task = PythonOperator(
         task_id='train_model',
-        op_kwargs=dag.default_args,
         provide_context=True,
         python_callable=__train_model
     )

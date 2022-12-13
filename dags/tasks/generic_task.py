@@ -18,19 +18,21 @@ class GenericTask():
     
     """
 
-    def __init__(self,table_name):
-        self.table = table_name
+    def __init__(self,context):
+        self.context = context
+        self.run_id = context['run_id']
 
-        logger.info('self.table')
+        logger.info('self.run_id: {}'.format(self.run_id))
 
 
-    def _get_data(self, table_name, columns_to_unpack):
+    def _get_data(self, columns_to_unpack, sql_stmt):
         """
         This method is responsible for reading data
 
         Args:
             table_name(str)
             columns_to_unpack(list)
+            sql_stmt(str)
 
         Returns:
             read_df(pandas df)
@@ -39,10 +41,11 @@ class GenericTask():
 
             logger.info('_get_data starting')
 
-            sql_stmt = "SELECT * FROM heart_analysis.{}".format(table_name)
             pg_hook = PostgresHook(
                 postgres_conn_id='postgres_default'
             )
+
+            logger.info('sql_stmt: {}'.format(sql_stmt))
 
             pg_conn = pg_hook.get_conn()
             cursor = pg_conn.cursor()
@@ -105,7 +108,7 @@ class GenericTask():
             raise err
 
 
-    def _store_nested_array(self, arr_to_store, table_name, schema_name):
+    def _store_nested_array(self, arr_to_store, table_name, schema_name, handle_duplicates = ''):
         """
         This method is responsible for storing data
 
@@ -113,6 +116,7 @@ class GenericTask():
             arr_to_store(numpy array)
             table_name(str)
             schema_name(str)
+            handle_duplicates(str): handle duplicates in storing
         """
         try:
 
@@ -131,7 +135,7 @@ class GenericTask():
 
             logger.info('len tuples:{}'.format(len(tuples)))
 
-            sql_insert = "INSERT INTO {}.{} values {} ON CONFLICT DO NOTHING".format(schema_name, table_name,tuples)
+            sql_insert = "INSERT INTO {}.{} values {} {}".format(schema_name, table_name,tuples,handle_duplicates)
 
 
             logger.info('sql_insert: {}'.format(sql_insert))
@@ -145,7 +149,7 @@ class GenericTask():
             raise err
 
 
-    def _store_array(self, arr_to_store, table_name, schema_name):
+    def _store_array(self, arr_to_store, table_name, schema_name, handle_duplicates = ''):
         """
         This method is responsible for storing data
 
@@ -153,6 +157,7 @@ class GenericTask():
             arr_to_store(numpy array)
             table_name(str)
             schema_name(str)
+            handle_duplicates(str): handle duplicates in storing
         """
         try:
 
@@ -171,7 +176,7 @@ class GenericTask():
             
             logger.info('len tuples:{}'.format(len(tuples)))
 
-            sql_insert = "INSERT INTO {}.{} values {} ON CONFLICT DO NOTHING".format(schema_name, table_name,tuples)
+            sql_insert = "INSERT INTO {}.{} values {} {}".format(schema_name, table_name,tuples,handle_duplicates)
 
 
             logger.info('sql_insert: {}'.format(sql_insert))

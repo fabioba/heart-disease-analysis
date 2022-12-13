@@ -14,7 +14,8 @@ CREATE TABLE IF NOT EXISTS heart_analysis.heart_fact_cleaned(
     "ca" int,
     "thal" int,
     "target" int,
-    PRIMARY KEY("account_id")
+    "pipeline_run" varchar,
+    PRIMARY KEY("account_id","pipeline_run")
 );
 
 CREATE TABLE IF NOT EXISTS heart_analysis.heart_x_train(
@@ -30,7 +31,8 @@ CREATE TABLE IF NOT EXISTS heart_analysis.heart_x_train(
     "oldpeak" float,
     "slope" int,
     "ca" int,
-    "thal" int
+    "thal" int,
+    "pipeline_run" varchar
 );
 
 CREATE TABLE IF NOT EXISTS heart_analysis.heart_x_test(
@@ -46,13 +48,16 @@ CREATE TABLE IF NOT EXISTS heart_analysis.heart_x_test(
     "oldpeak" float,
     "slope" int,
     "ca" int,
-    "thal" int
+    "thal" int,
+    "pipeline_run" varchar
 );
 
 CREATE TABLE IF NOT EXISTS heart_analysis.heart_y_train(
-    "target" int
+    "target" int,
+    "pipeline_run" varchar
 );
 
 CREATE TABLE IF NOT EXISTS heart_analysis.heart_y_test(
-    "target" int
+    "target" int,
+    "pipeline_run" varchar
 );
