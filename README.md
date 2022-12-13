@@ -179,3 +179,4 @@ Then, on the section server it's easy to monitor and query those tables.
 * [MLOps deployment](https://towardsdatascience.com/ml-model-deployment-strategies-72044b3c1410)
 * [Integrate MLFlow](https://medium.com/@kaanboke/step-by-step-mlflow-implementations-a9872dd32d9b)
 * [Productionize on Docker](https://medium.com/cometheartbeat/create-an-mlops-pipeline-with-github-and-docker-hub-in-minutes-4a1515b6a551)
+* [Setup PGAdmin](https://hevodata.com/learn/pgadmin-docker/)

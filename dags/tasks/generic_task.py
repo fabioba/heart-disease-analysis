@@ -61,8 +61,8 @@ class GenericTask():
                                                                 "ca" ,
                                                                 "thal" ,
                                                                 "target"])
-
-            logger.info('read_df: {}'.format(read_df))
+            print(type(read_df))
+            logger.info('read_df: {}'.format(read_df.shape))
             #logger.info('read_df shape: {}'.format(read_df.shape))
 
             logger.info('_get_data success')
@@ -98,8 +98,22 @@ class GenericTask():
             # convert df into rows
             rows = list(df_to_store.itertuples(index=False, name=None))
 
+            tuples = (','.join(str(x) for x in rows))
+
+            logger.info('tuples:{}'.format(tuples))
+
+            sql_insert = "INSERT INTO heart_analysis.heart_fact_cleaned values {} ON CONFLICT DO NOTHING".format(tuples)
+
+
+            logger.info('sql_insert: {}'.format(sql_insert))
+            
+            postgres_sql_upload.run(sql_insert)
+
             # insert rows
-            postgres_sql_upload.insert_rows(table_name, rows)
+            #postgres_sql_upload.insert_rows(table_name_complete, rows)
+
+
+            #INSERT INTO heart_analysis.heart_fact_cleaned values '{{ params.values }}' ON CONFLICT DO NOTHING
 
 
             logger.info('__store_data success')

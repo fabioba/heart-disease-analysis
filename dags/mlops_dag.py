@@ -88,6 +88,7 @@ with DAG(
         postgres_conn_id="postgres_default",
         sql = 'sql_queries/create_tables_ml.sql'
     )    
+    
 
 
     clean_data_task = PythonOperator(
