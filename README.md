@@ -1,4 +1,4 @@
-# MLOPS-AIRFLOW-MLFLOW
+# HEART-DISEASE-ANALYSIS
 
 
 ## Table of content
@@ -116,6 +116,8 @@ CREATE TABLE IF NOT EXISTS heart_analysis.account_dim(
 
 ## System Design - Machine Learning Pipeline
 
+Below there's the `ML pipeline` on `Airflow`:
+![img](docs/imgs/ml_workflow.png)
 
 <a name="tech_stack"/>
 
@@ -162,6 +164,8 @@ mlflow.set_tracking_uri('http://mlflow:600')
 ```
 
 After updating the URI of the MLFlow server, create a new connection on `Airflow`.
+The experiment section on `MLflow` provides a table to compare experiment:
+![img](docs/imgs/mlflow_experiment.png)
 
 <a name="postgresql"/>
 
