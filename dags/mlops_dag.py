@@ -76,7 +76,7 @@ def __train_model(**context):
 
 with DAG(
     dag_id='mlops_dag', 
-    start_date=datetime(2022, 1, 1), 
+    start_date=datetime(2022, 12, 1), 
     schedule_interval='@daily', 
     catchup=False) as dag:
 
