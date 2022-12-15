@@ -81,7 +81,7 @@ class PreprocessData(generic_task.GenericTask):
             all_features_scaled = scaler.fit_transform(all_features)
 
 
-            (self.__x_train, self.__x_test, self.__y_train, self.__y_test) = train_test_split(all_features_scaled, all_classes,test_size=0.70, random_state=0)
+            (self.__x_train, self.__x_test, self.__y_train, self.__y_test) = train_test_split(all_features_scaled, all_classes,test_size=0.80, random_state=0)
 
             logger.info('__process_data success')
 

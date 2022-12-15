@@ -1,10 +1,12 @@
 """
-This module includes the logic of processing data
+This module includes the logic for training the model
 
 Date: Oct, 2022
 Author: Fabio Barbazza
 """
-from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import GridSearchCV
+
 import mlflow
 
 from tasks import generic_task
@@ -23,7 +25,7 @@ class TrainModel(generic_task.GenericTask):
 
     def run(self):
         """
-        This method is responsible for performing cleaning
+        This method is responsible for performing training of the model
 
         1. read data from PostgreSQL
         2. train model
@@ -49,13 +51,8 @@ class TrainModel(generic_task.GenericTask):
             sql_y_train = "SELECT * FROM heart_analysis.heart_y_train"
             y_train = self._get_data(columns_to_unpack_y, sql_y_train)
 
-            sql_x_test = "SELECT * FROM heart_analysis.heart_x_test"
-            x_test = self._get_data(columns_to_unpack_x, sql_x_test)
 
-            sql_y_test = "SELECT * FROM heart_analysis.heart_y_test"
-            y_test = self._get_data(columns_to_unpack_y, sql_y_test)
-
-            self.__train_model(x_train, y_train, x_test, y_test)
+            self.__train_model(x_train, y_train)
 
         except Exception as err:
             logger.exception(err)
@@ -63,28 +60,63 @@ class TrainModel(generic_task.GenericTask):
     
 
 
-    def __train_model(self, x_train, y_train, x_test, y_test):
+    def __train_model(self, x_train, y_train):
         """
         This method is responsible for training model
+
+        Args:  
+            x_train(data)
+            y_train(data)
         """
         try:
 
             experiment = mlflow.set_experiment("train_model")
 
+            grid_param = {
+                'n_estimators': [5, 10, 20, 50],
+                'criterion': ['gini', 'entropy'],
+                'bootstrap': [True, False]
+            }
+
             with mlflow.start_run():
 
                 logger.info('__train_model starting')
 
-                model = LogisticRegression()
+                classifier = RandomForestClassifier(random_state=0)
 
-                model.fit(x_train,y_train)
-                
-                y_pred = model.predict(x_test)
+                gd_sr = GridSearchCV(estimator=classifier,
+                     param_grid=grid_param,
+                     scoring='accuracy',
+                     cv=5,
+                     n_jobs=-1)
 
-                lr_score=model.score(x_test,y_test)*100
+                gd_sr.fit(x_train,y_train)
 
-                mlflow.log_param("model_type",'Logistic_Regression')
-                mlflow.log_metric("model_score",lr_score)
+                best_parameters = gd_sr.best_params_
+                logger.info('best_parameters: {}'.format(best_parameters))
+
+                best_bootstrap = best_parameters['bootstrap']
+                best_criterion = best_parameters['criterion']
+                best_n_estimators = best_parameters['n_estimators']
+
+                mlflow.log_param("model_type",'RandomForest')
+                mlflow.log_metric("bootstrap",best_bootstrap)
+                mlflow.log_param("criterion",best_criterion)
+                mlflow.log_metric("n_estimators",best_n_estimators)
+
+                classifier = RandomForestClassifier(random_state=0, bootstrap = best_bootstrap, criterion = best_criterion, n_estimators= best_n_estimators)
+                classifier.fit(x_train, y_train)
+
+                mlflow.sklearn.save_model(sk_model = classifier, path ='mlruns/{}.pkl'.format(self.run_id))
+
+                logger.info('saved model')
+
+                # this need to be reviewed
+                mlflow.sklearn.log_model(
+                    sk_model=classifier,
+                    artifact_path="mlruns/test2.pkl",
+                    registered_model_name="sk-learn-random-forest-reg-model"
+                )
 
 
             logger.info('__train_model success')

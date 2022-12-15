@@ -13,4 +13,5 @@ COPY . .
 
 EXPOSE 600
 
-CMD [ "mlflow", "server","--host","0.0.0.0","--port","600"]
+
+CMD ["mlflow", "server", "--backend-store-uri", "postgresql://airflow:airflow@postgres:5432/mlflowdb", "--default-artifact-root", "./mlruns", "-h", "0.0.0.0", "-p", "600"]
