@@ -5,16 +5,6 @@ This DAG is responsible for running the sequence of steps from steps_example_dag
 Author: Fabio Barbazza
 Date: Oct, 2022
 """
-from airflow import DAG
-from datetime import datetime
-
-from airflow.providers.postgres.operators.postgres import PostgresOperator
-from airflow.operators.dummy_operator import DummyOperator
-from operators.load_data import LoadDataOperator
-from operators.load_dimension_table import LoadDimensionOperator
-from airflow.utils.task_group import TaskGroup
-from operators.helpers.sql_queries import SqlQueries
-
 import logging
 
 
@@ -22,16 +12,36 @@ FORMAT = '%(asctime)s - %(message)s'
 logging.basicConfig(format = FORMAT, level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+from airflow import DAG
+from datetime import datetime, timedelta
+
+from airflow.providers.postgres.operators.postgres import PostgresOperator
+from airflow.operators.dummy_operator import DummyOperator
+from operators.load_data import LoadDataOperator
+from operators.load_dimension_table import LoadDimensionOperator
+from airflow.utils.task_group import TaskGroup
+from operators.helpers.sql_queries import SqlQueries
+from operators.utils.utils import get_config
 
 
+
+default_args = {
+    'owner': 'Fabio Barbazza',
+    'start_date': datetime(2022, 1, 1), 
+    'catchup': False,
+    'retries': 1,
+    'retry_delay': timedelta(minutes=5),
+} 
+
+config = get_config('config/config.yaml')
 
 with DAG(
-    dag_id='etl_dag', 
-    start_date=datetime(2022, 1, 1), 
-    schedule_interval='@daily', 
-    catchup=False) as dag:
+        dag_id = 'etl_dag',
+        default_args = default_args,
+        config = config
+    ) as dag:
 
-    start_operator = DummyOperator(task_id='Begin_execution',  dag=dag)
+    start_operator = DummyOperator(task_id='Begin_execution',  dag=dag, schedule_interval='@daily')
 
     # create tables
     create_table = PostgresOperator(

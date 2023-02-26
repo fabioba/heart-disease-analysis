@@ -5,3 +5,11 @@ ETL_DAG:
   DEV:
     DB:
       SCHEMA: heart_analysis
+
+MLOPS_DAG:
+  PROD:
+    DB:
+      SCHEMA: dev_heart_analysis
+  DEV:
+    DB:
+      SCHEMA: heart_analysis

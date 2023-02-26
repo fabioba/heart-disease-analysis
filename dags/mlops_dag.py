@@ -5,26 +5,35 @@ This DAG is responsible for running the sequence of steps from steps_example_dag
 Author: Fabio Barbazza
 Date: Oct, 2022
 """
+import logging
+FORMAT = '%(asctime)s - %(message)s'
+logging.basicConfig(format = FORMAT, level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.providers.postgres.operators.postgres import PostgresOperator
 
-from datetime import datetime
-import logging
-import mlflow
-from numpy import random
+from datetime import datetime, timedelta
 
 from tasks.clean_data import CleanData
 from tasks.preprocess_data import PreprocessData
 from tasks.train_model import TrainModel
 
-FORMAT = '%(asctime)s - %(message)s'
-logging.basicConfig(format = FORMAT, level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-
-
+import mlflow
 mlflow.set_tracking_uri('http://mlflow:600')
+
+from operators.utils.utils import get_config
+
+default_args = {
+    'owner': 'Fabio Barbazza',
+    'start_date': datetime(2022, 1, 1), 
+    'catchup': False,
+    'retries': 1,
+    'retry_delay': timedelta(minutes=5),
+} 
+
+config = get_config('config/config.yaml')
 
 
 def __clean_data(**context):
@@ -76,10 +85,11 @@ def __train_model(**context):
         
 
 with DAG(
-    dag_id='mlops_dag', 
-    start_date=datetime(2022, 12, 1), 
-    schedule_interval='@daily', 
-    catchup=False) as dag:
+        dag_id = 'mlops_dag',
+        default_args = default_args,
+        config = config
+    ) as dag:
+
 
     # create tables
     create_table = PostgresOperator(
