@@ -10,7 +10,6 @@ from sklearn.model_selection import train_test_split
 from tasks import generic_task
 import logging 
 
-logging.basicConfig(level=logging.WARN)
 logger = logging.getLogger(__name__)
 
 class PreprocessData(generic_task.GenericTask):

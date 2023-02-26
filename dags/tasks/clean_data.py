@@ -7,7 +7,6 @@ Author: Fabio Barbazza
 from tasks import generic_task
 import logging 
 
-logging.basicConfig(level=logging.WARN)
 logger = logging.getLogger(__name__)
 
 class CleanData(generic_task.GenericTask):

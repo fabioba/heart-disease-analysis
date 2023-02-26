@@ -18,7 +18,8 @@ from tasks.clean_data import CleanData
 from tasks.preprocess_data import PreprocessData
 from tasks.train_model import TrainModel
 
-logging.basicConfig(level=logging.WARN)
+FORMAT = '%(asctime)s - %(message)s'
+logging.basicConfig(format = FORMAT, level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 

@@ -1,0 +1,7 @@
+ETL_DAG:
+  PROD:
+    DB:
+      SCHEMA: dev_heart_analysis
+  DEV:
+    DB:
+      SCHEMA: heart_analysis

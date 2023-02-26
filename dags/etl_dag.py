@@ -17,7 +17,9 @@ from operators.helpers.sql_queries import SqlQueries
 
 import logging
 
-logging.basicConfig(level=logging.WARN)
+
+FORMAT = '%(asctime)s - %(message)s'
+logging.basicConfig(format = FORMAT, level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 

@@ -10,7 +10,6 @@ from sklearn.metrics import accuracy_score
 from tasks import generic_task
 import logging 
 
-logging.basicConfig(level=logging.WARN)
 logger = logging.getLogger(__name__)
 
 class EvaluateModel(generic_task.GenericTask):
