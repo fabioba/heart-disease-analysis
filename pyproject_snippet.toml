@@ -1,0 +1,23 @@
+[tool.ruff]
+line-length = 100
+target-version = "py311"          # match your team's Python version
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+]
+ignore = [
+    "E501",  # line-too-long (handled by ruff-format)
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["your_package_name"]  # ← replace with your package
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
